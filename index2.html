@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Светофор - Пользователь</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 20px;
+            background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+            color: #333;
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .item {
+            border: 2px solid #007BFF;
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .item img {
+            max-width: 100px;
+            height: auto;
+            margin-right: 20px;
+            border-radius: 8px;
+        }
+        .item-details {
+            flex-grow: 1;
+        }
+        .category-icon {
+            margin-right: 10px;
+            font-size: 24px;
+            color: #007BFF;
+        }
+        #categoryFilter {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            width: 100%;
+        }
+        img {
+            width: 265px;
+            height: 100px;
+            position: center;
+        }
+        .aligncenter {
+            text-align: center;
+        }
+        br {
+            color: #ccc;
+        }
+        @media (max-width: 600px) {
+            .item img {
+                max-width: 80px;
+            }
+            .item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .item-details {
+                margin-top: 10px;
+            }
+        }
+    </style>
+    <p class="aligncenter">
+        <img src="123.png" alt="">
+    </p>
+</head>
+<body>
+
+    <h1>Управление товарами - Пользователь</h1>
+
+    <select id="categoryFilter">
+        <option value="all">Все категории</option>
+        <option value="canned">Консервированная и замороженная продукция</option>
+        <option value="tea-coffee">Чай, кофе</option>
+        <option value="dairy">Молочная продукция</option>
+        <option value="household">Посуда, хоз. товары и мебель</option>
+        <option value="chemicals">Бытовая химия</option>
+    </select>
+
+    <div id="itemsContainer"></div>
+
+    <script>
+        // Загрузка товаров из localStorage при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = JSON.parse(localStorage.getItem('items')) || [];
+            items.forEach(item => addItem(item.category, item.name, item.description, item.photoSrc));
+            filterItems('all');
+        });
+
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            filterItems(this.value);
+        });
+
+        function addItem(category, name, description, photoSrc) {
+            const container = document.getElementById('itemsContainer');
+
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            itemDiv.dataset.category = category;
+
+            const categoryIcon = document.createElement('i');
+            categoryIcon.className = `category-icon ${getCategoryIcon(category)}`;
+
+            const itemPhoto = document.createElement('img');
+            itemPhoto.src = photoSrc;
+
+            const itemDetails = document.createElement('div');
+            itemDetails.className = 'item-details';
+
+            const itemName = document.createElement('h2');
+            itemName.textContent = name;
+
+            const itemDescription = document.createElement('p');
+            itemDescription.textContent = description;
+
+            itemDetails.appendChild(itemName);
+            itemDetails.appendChild(itemDescription);
+            itemDiv.appendChild(categoryIcon);
+            itemDiv.appendChild(itemPhoto);
+            itemDiv.appendChild(itemDetails);
+
+            container.appendChild(itemDiv);
+        }
+
+        function getCategoryIcon(category) {
+            switch (category) {
+                case 'canned':
+                    return 'fas fa-snowflake';
+                case 'tea-coffee':
+                    return 'fas fa-mug-hot';
+                case 'dairy':
+                    return 'fas fa-cheese';
+                case 'household':
+                    return 'fas fa-couch';
+                case 'chemicals':
+                    return 'fas fa-flask';
+                default:
+                    return 'fas fa-box';
+            }
+        }
+
+        function filterItems(category) {
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                if (category === 'all' || item.dataset.category === category) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
